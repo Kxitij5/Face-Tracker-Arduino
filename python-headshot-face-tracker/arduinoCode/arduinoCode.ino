@@ -2,10 +2,12 @@
 #include <Servo.h>
 Servo servoVer; //Vertical Servo
 Servo servoHor; //Horizontal Servo
+#define buzzer 4
 int x;
 int y;
 int prevX;
 int prevY;
+int f;
 void setup()
 {
   Serial.begin(9600);
@@ -14,6 +16,8 @@ void setup()
   servoVer.write(90);
   servoHor.write(90);
 }
+
+
 void Pos()
 {
   if(prevX != x || prevY != y)
@@ -27,8 +31,17 @@ void Pos()
     
     servoHor.write(servoX);
     servoVer.write(servoY);
+    if (f == 1)
+    {
+      digitalWrite(buzzer,HIGH);
+      delay(500);
+      digitalWrite(buzzer,LOW);
+    }
+    
+    
   }
 }
+
 void loop()
 {
   if(Serial.available() > 0)
@@ -39,8 +52,14 @@ void loop()
       if(Serial.read() == 'Y')
       {
         y = Serial.parseInt();
+       
+      if (Serial.read() == 'F')
+      {
+        f = Serial.parseInt();
        Pos();
       }
+      }
+      
     }
     while(Serial.available() > 0)
     {
